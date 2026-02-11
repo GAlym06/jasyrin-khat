@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Жасырын хат</title>
+<!-- Подключаем красивые шрифты -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif; /* Основной шрифт */
+  background: #fff0f5;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  perspective: 1000px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Конверт */
+.envelope {
+  width: 280px;
+  height: 180px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+
+.envelope-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffb3c6, #ff80ab);
+  border-radius: 10px;
+  position: absolute;
+  backface-visibility: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.envelope-flap {
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(135deg, #ff80ab, #ff4d94);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top center;
+  transition: transform 1s ease;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  z-index: 2;
+}
+
+.envelope.open .envelope-flap {
+  transform: rotateX(-180deg);
+}
+
+.envelope-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: #fff;
+  text-align: center;
+  bottom: 20px;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Письмо */
+.letter-container {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.letter-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: left 0.5s ease;
+}
+
+.letter-page.active {
+  left: 0;
+}
+
+.letter-line {
+  font-family: 'Dancing Script', cursive; /* Рукописный шрифт */
+  font-size: 24px;
+  color: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+  max-width: 90%;
+  text-align: center;
+}
+
+.letter-line.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Фоны для каждой строки */
+.bg1 { background: linear-gradient(135deg, #f6d365, #fda085); }
+.bg2 { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.bg3 { background: linear-gradient(135deg, #84fab0, #8fd3f4); }
+.bg4 { background: linear-gradient(135deg, #fccb90, #d57eeb); }
+.bg5 { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+.bg6 { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+.bg7 { background: linear-gradient(135deg, #a6c0fe, #f68084); }
+
+</style>
+</head>
+<body>
+
+<!-- Конверт -->
+<div class="container">
+  <div class="envelope" id="envelope">
+    <div class="envelope-flap"></div>
+    <div class="envelope-body"></div>
+    <div class="envelope-text">Жасырын хат</div>
+  </div>
+</div>
+
+<!-- Письмо -->
+<div class="letter-container" id="letterContainer">
+  <div class="letter-page bg1">
+    <div class="letter-line">Сенің жымиысың айналаңа ерекше жылулық сыйлайды.</div>
+  </div>
+  <div class="letter-page bg2">
+    <div class="letter-line">Жарық шашып тұратын жансың. Сабырлы мінезің мен нәзіктігің сені өзгеше етеді.</div>
+  </div>
+  <div class="letter-page bg3">
+    <div class="letter-line">Сен сөйлегенде сөзің мәнді.</div>
+  </div>
+  <div class="letter-page bg4">
+    <div class="letter-line">Сені тыңдау әрқашан жағымды. 🌷</div>
+  </div>
+  <div class="letter-page bg5">
+    <div class="letter-line">Қарапайым бола тұра, ерекше болмысыңмен есте қаласың. 💫💫</div>
+  </div>
+  <div class="letter-page bg6">
+    <div class="letter-line">Өзің болып қала бер.</div>
+  </div>
+  <div class="letter-page bg7">
+    <div class="letter-line">Жылы жүзің мен шынайылығың әрдайым қуаныш сыйласын.</div>
+  </div>
+</div>
+
+<script>
+const envelope = document.getElementById('envelope');
+const letterContainer = document.getElementById('letterContainer');
+const pages = document.querySelectorAll('.letter-page');
+let currentPage = 0;
+
+// Открытие конверта
+envelope.addEventListener('click', () => {
+  envelope.classList.add('open');
+  setTimeout(() => {
+    document.querySelector('.container').style.display = 'none';
+    letterContainer.style.display = 'block';
+    showPage(currentPage);
+  }, 1000);
+});
+
+// Показ страницы с анимацией текста
+function showPage(index) {
+  pages.forEach((page, i) => {
+    page.classList.remove('active');
+    page.querySelector('.letter-line').classList.remove('show');
+  });
+  const page = pages[index];
+  page.classList.add('active');
+  setTimeout(() => {
+    page.querySelector('.letter-line').classList.add('show');
+  }, 200);
+}
+
+// Свайп для мобильного
+let startX = 0;
+letterContainer.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+});
+letterContainer.addEventListener('touchend', e => {
+  let endX = e.changedTouches[0].clientX;
+  if (startX - endX > 50 && currentPage < pages.length - 1) {
+    currentPage++;
+    showPage(currentPage);
+  } else if (endX - startX > 50 && currentPage > 0) {
+    currentPage--;
+    showPage(currentPage);
+  }
+});
+</script>
+
+</body>
+</html>
